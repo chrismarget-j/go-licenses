@@ -99,8 +99,11 @@ func saveMain(_ *cobra.Command, args []string) error {
 		switch licenseType {
 		case licenses.Restricted, licenses.Reciprocal:
 			// Copy the entire source directory for the library.
-			libDir := filepath.Dir(lib.LicensePath)
-			if err := copySrc(libDir, libSaveDir); err != nil {
+			//libDir := filepath.Dir(lib.LicensePath)
+			//if err := copySrc(libDir, libSaveDir); err != nil {
+
+			// Just copy the license and copyright notice.
+			if err := copyNotices(lib.LicensePath, libSaveDir); err != nil {
 				return err
 			}
 		case licenses.Notice, licenses.Permissive, licenses.Unencumbered:
