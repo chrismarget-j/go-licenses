@@ -5,8 +5,9 @@ dependencies recognized as `RestrictionsShareCode` do not have their
 source code copied by the `save` command, but are "saved" in the same manner
 as `RestrictionsShareLicense` dependencies.
 
-The only modified files are `README.md` (this file), `go.mod` (changed to reflect
-this repository's location) and `save.go`.
+The only modifications are in `README.md` (this file), `save.go` (logic change
+below), and various module and test data paths (changed to reflect this
+repository's location).
 
 The modification to `save.go` is reflected by the following `git patch` output:
 ```
