@@ -1,33 +1,30 @@
 # Fork of Licenses tool
 
 This is a fork of https://github.com/google/go-licenses with a change so that
-dependencies recognized as *restricted* and *reciprocal* do not have their
+dependencies recognized as `RestrictionsShareCode` do not have their
 source code copied by the `save` command, but are "saved" in the same manner
-as `notice`, `permissive` and `unencumbered` dependencies.
+as `RestrictionsShareLicense` dependencies.
 
-The only modified files are `README.md` (this file), `go.mod` (changed to reflect
-this repository's location) and `save.go`.
+The only modifications are in `README.md` (this file), `save.go` (logic change
+below), and various module and test data paths (changed to reflect this
+repository's location).
 
 The modification to `save.go` is reflected by the following `git patch` output:
 ```
 diff --git a/save.go b/save.go
-index d11234c..edbaf2e 100644
+index 1faa400..d4740d6 100644
 --- a/save.go
 +++ b/save.go
-@@ -99,8 +99,11 @@ func saveMain(_ *cobra.Command, args []string) error {
-                switch licenseType {
-                case licenses.Restricted, licenses.Reciprocal:
+@@ -102,8 +102,12 @@ func saveMain(_ *cobra.Command, args []string) error {
+                switch restrictiveness {
+                case licenses.RestrictionsShareCode:
                         // Copy the entire source directory for the library.
--                       libDir := filepath.Dir(lib.LicensePath)
+-                       libDir := filepath.Dir(lib.LicenseFile)
 -                       if err := copySrc(libDir, libSaveDir); err != nil {
-+                       //libDir := filepath.Dir(lib.LicensePath)
++                       //libDir := filepath.Dir(lib.LicenseFile)
 +                       //if err := copySrc(libDir, libSaveDir); err != nil {
-+
-+                       // Just copy the license and copyright notice.
-+                       if err := copyNotices(lib.LicensePath, libSaveDir); err != nil {
-                                return err
-                        }
-                case licenses.Notice, licenses.Permissive, licenses.Unencumbered:
++                       //      return err
++                       //}
 ```
 Everything below this line is from the project's original `README.md`.
 # Licenses tool

@@ -21,7 +21,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/google/go-licenses/licenses"
+	"github.com/chrismarget-j/go-licenses/licenses"
 	"github.com/spf13/cobra"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -67,7 +67,7 @@ func checkMain(_ *cobra.Command, args []string) error {
 		hasLicenseType = true
 	}
 
-	classifier, err := licenses.NewClassifier(confidenceThreshold)
+	classifier, err := licenses.NewClassifier()
 	if err != nil {
 		return err
 	}
@@ -81,32 +81,25 @@ func checkMain(_ *cobra.Command, args []string) error {
 	found := false
 
 	for _, lib := range libs {
-		if lib.LicensePath == "" {
+		if lib.LicenseFile == "" {
 			fmt.Fprintf(os.Stderr, "Did not find license for library '%v'.\n", lib)
 			found = true
 			continue
 		}
 
-		licenseName, licenseType, err := classifier.Identify(lib.LicensePath)
-		if err != nil {
-			return err
-		}
-
-		if hasLicenseNames && !isAllowedLicenseName(licenseName, allowedLicenseNames) {
-			fmt.Fprintf(os.Stderr, "Not allowed license '%s' found for library '%v'.\n", licenseName, lib)
-			found = true
-			continue
-		}
-
-		if hasLicenseType && isDisallowedLicenseType(licenseType, disallowedLicenseTypes) {
-			fmt.Fprintf(
-				os.Stderr,
-				"License '%s' of not allowed license type '%s' found for library '%v'.\n",
-				licenseName,
-				cases.Title(language.English).String(licenseType.String()),
-				lib)
-			found = true
-			continue
+		for _, license := range lib.Licenses {
+			if hasLicenseNames && !isAllowedLicenseName(license.Name, allowedLicenseNames) {
+				fmt.Fprintf(os.Stderr, "Not allowed license '%s' found for library '%v'.\n", license.Name, lib)
+				found = true
+			} else if hasLicenseType && isDisallowedLicenseType(license.Type, disallowedLicenseTypes) {
+				fmt.Fprintf(
+					os.Stderr,
+					"License '%s' of not allowed license type '%s' found for library '%v'.\n",
+					license.Name,
+					cases.Title(language.English).String(license.Type.String()),
+					lib)
+				found = true
+			}
 		}
 	}
 
