@@ -102,8 +102,12 @@ func saveMain(_ *cobra.Command, args []string) error {
 		switch restrictiveness {
 		case licenses.RestrictionsShareCode:
 			// Copy the entire source directory for the library.
-			libDir := filepath.Dir(lib.LicenseFile)
-			if err := copySrc(libDir, libSaveDir); err != nil {
+			//libDir := filepath.Dir(lib.LicenseFile)
+			//if err := copySrc(libDir, libSaveDir); err != nil {
+			//	return err
+			//}
+			// Just copy the license and copyright notice.
+			if err := copyNotices(lib.LicenseFile, libSaveDir); err != nil {
 				return err
 			}
 		case licenses.RestrictionsShareLicense:
