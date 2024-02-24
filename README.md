@@ -1,3 +1,31 @@
+# Fork of Licenses tool
+
+This is a fork of https://github.com/google/go-licenses with a change so that
+dependencies recognized as `RestrictionsShareCode` do not have their
+source code copied by the `save` command, but are "saved" in the same manner
+as `RestrictionsShareLicense` dependencies.
+
+The only modified files are `README.md` (this file), `go.mod` (changed to reflect
+this repository's location) and `save.go`.
+
+The modification to `save.go` is reflected by the following `git patch` output:
+```
+diff --git a/save.go b/save.go
+index 1faa400..d4740d6 100644
+--- a/save.go
++++ b/save.go
+@@ -102,8 +102,12 @@ func saveMain(_ *cobra.Command, args []string) error {
+                switch restrictiveness {
+                case licenses.RestrictionsShareCode:
+                        // Copy the entire source directory for the library.
+-                       libDir := filepath.Dir(lib.LicenseFile)
+-                       if err := copySrc(libDir, libSaveDir); err != nil {
++                       //libDir := filepath.Dir(lib.LicenseFile)
++                       //if err := copySrc(libDir, libSaveDir); err != nil {
++                       //      return err
++                       //}
+```
+Everything below this line is from the project's original `README.md`.
 # Licenses tool
 
 > This is not an officially supported Google product.
